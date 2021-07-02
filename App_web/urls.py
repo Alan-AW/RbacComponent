@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from App_web.views import customer
 from App_web.views import payment
+from App_web.views import account
 
 app_name='App_web'
 urlpatterns = [
@@ -16,5 +17,7 @@ urlpatterns = [
     url(r'^payment/add/$', payment.payment_add),
     url(r'^payment/edit/(?P<pid>\d+)/$', payment.payment_edit),
     url(r'^payment/del/(?P<pid>\d+)/$', payment.payment_del),
+
+    url(r'^login/$', account.login)
 
 ]

@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Mr'Xu">
+    <meta name="Description" content="WebSite Desc">
+    <meta name="keywords" content="search keyword">
+    <meta name="website" content="http://www.xumeijie.com/">
+    <link rel="shortcut icon" href="{% static '' %}"/>
+    <title id="site_title">用户登录</title>
+    <link rel="stylesheet" type="text/css" href="">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<h1>用户登录</h1>
+<form action="" method="post">
+    {% csrf_token %}
+    <input type="text" name="user" placeholder="请输入用户名">
+    <input type="password" name="password" placeholder="请输入密码">
+    <input type="submit" value="登录"><span style="color: red">{{ msg }}</span>
+</form>
+</body>
+
+<script src="{% static '' %}"></script>
+</html>

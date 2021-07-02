@@ -13,6 +13,10 @@ class UserInfo(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        db_table = 'userinfo'
+        verbose_name = '用户'
+
 
 class Permission(models.Model):
     '''
@@ -20,9 +24,29 @@ class Permission(models.Model):
     '''
     title = models.CharField(verbose_name='标题', max_length=32)
     url = models.CharField(verbose_name='url', max_length=128)
+    # 菜单的划分
+    menu = models.ForeignKey(verbose_name='所属菜单', to='Menu',null=True, blank=True,
+                             help_text='null表示不是菜单,这个字段有值才表示二级菜单',
+                             on_delete=models.DO_NOTHING)
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        db_table = 'permission'
+        verbose_name = '权限'
+
+
+class Menu(models.Model):
+    title = models.CharField(verbose_name='一级菜单', max_length=32)
+    icon = models.CharField(verbose_name='菜单图标', max_length=32, null=True, blank=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        db_table = 'menu'
+        verbose_name = '菜单'
 
 
 class Role(models.Model):
@@ -34,3 +58,7 @@ class Role(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        db_table = 'role'
+        verbose_name = '角色'

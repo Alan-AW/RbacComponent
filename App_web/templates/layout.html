@@ -1,10 +1,10 @@
 {% load static %}
+{% load rbac %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>路飞学城</title>
-    <link rel="shortcut icon" href="{% static 'imgs/luffy-study-logo.png' %} ">
+    <title>CRM后台权限管理系统</title>
     <link rel="stylesheet" href="{% static 'plugins/bootstrap/css/bootstrap.css' %} "/>
     <link rel="stylesheet" href="{% static 'plugins/font-awesome/css/font-awesome.css' %} "/>
     <link rel="stylesheet" href="{% static 'css/commons.css' %} "/>
@@ -74,11 +74,10 @@
             background: #efefef;
             background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #efefef), color-stop(1, #fafafa));
             background: -ms-linear-gradient(bottom, #efefef, #fafafa);
-            background: -moz-linear-gradient(center bottom, #efefef 0%, #fafafa 100%);
             background: -o-linear-gradient(bottom, #efefef, #fafafa);
             filter: progid:dximagetransform.microsoft.gradient(startColorStr='#e3e3e3', EndColorStr='#ffffff');
             -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#fafafa',EndColorStr='#efefef')";
-            box-shadow: inset 0px 1px 1px white;
+            box-shadow: inset 0 1px 1px white;
         }
 
         .left-menu .menu-body .static-menu a:hover {
@@ -98,15 +97,15 @@
     <div class="nav">
         <div class="logo-area left">
             <a href="#">
-                <img class="logo" src="{% static 'imgs/logo.svg' %}">
-                <span style="font-size: 18px;">路飞学城 </span>
+                <img class="logo" src="#">
+                <span style="font-size: 18px;">权限管理 </span>
             </a>
         </div>
 
         <div class="left-menu left">
             <a class="menu-item">资产管理</a>
             <a class="menu-item">用户信息</a>
-            <a class="menu-item">路飞管理</a>
+            <a class="menu-item">后台管理</a>
             <div class="menu-item">
                 <span>使用说明</span>
                 <i class="fa fa-caret-down" aria-hidden="true"></i>
@@ -153,14 +152,10 @@
 </div>
 <div class="pg-body">
     <div class="left-menu">
+        <!-- 一级菜单使用 menuList 二级菜单使用 multiMenu -->
+        <!-- 不管使用哪个菜单都需要传参数  request -->
         <div class="menu-body">
-            <div class="static-menu">
-                <a href="/customer/list/" class="active">
-                    <span class="icon-wrap"><i class="fa fa-connectdevelop"></i></span> 客户管理</a>
-                <a href="/payment/list/">
-                    <span class="icon-wrap"><i class="fa fa-code-fork"></i></span> 账单管理</a>
-            </div>
-
+            {% multiMenu request %}
         </div>
     </div>
     <div class="right-body">

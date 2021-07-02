@@ -13,6 +13,11 @@ class Customer(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        db_table = 'customer'
+        verbose_name = '客户表'
+
+
 class Payment(models.Model):
     """
     付费记录
@@ -21,4 +26,6 @@ class Payment(models.Model):
     money = models.IntegerField(verbose_name='付费金额')
     create_time = models.DateTimeField(verbose_name='付费时间', auto_now_add=True)
 
-
+    class Meta:
+        db_table = 'payment'
+        verbose_name = '付费记录'

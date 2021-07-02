@@ -1,0 +1,133 @@
+CRM系统的开发：
+    - 权限系统
+    - stark组件
+    - crm业务
+
+步骤：
+    1. 创建Django project
+    2. 分两个APP
+    3. App_rbac - 权限系统
+    4. App_Web - 业务系统
+    5. 整合两个app
+    6. 快速完成基本的权限控制
+        1. 设置白名单 - 登录页面，admin
+        2. POST请求，验证登录是否合法
+        3. 获取当前用户的所有权限放入session
+        4. 编写中间件拦截用户请求
+    7. 功能完善，将权限相关的功能全都放到rbac这个app下，便于以后的模块移植
+        a. 用户登录和权限初始化拆分
+        b. 配置文件中配置好所有的公共资源
+
+    以上总结： 6/7 属于进行权限的控制
+
+    8. 动态菜单功能的开发
+        * 一级菜单，如何动态显示菜单
+            a. 表结构修改 & 录入菜单数据
+            b. 获取菜单信息，存入session
+            c. 从session中获取到权限url，展示在页面中
+
+        * 二级菜单
+            a. 假设有这么一种数据结构：
+                {
+                    1：{
+                        title: '信息管理',
+                        icon: 'fa-icon',
+                        children: [
+                            {'title': '客户列表', 'url': '/customer/list/'},
+                            {'title': '账单列表', 'url': '/account/list/'},
+                        ]
+                    },
+                    2: {
+                        title: '用户信息',
+                        icon: 'fa-icon',
+                        children: [
+                            {'title': '个人信息', 'url': '/userinfo/list/'},
+                        ]
+                    }
+                }
+
+            b. 数据来源：数据库
+                --> 整改数据库，添加菜单数据表
+                class Permission(models.Model):
+                    '''
+                    权限表
+                    '''
+                    title = models.CharField(verbose_name='标题', max_length=32)
+                    url = models.CharField(verbose_name='url', max_length=128)
+                    # 菜单的划分
+                    menu = models.ForeignKey(verbose_name='所属菜单', to='Menu',null=True, blank=True,
+                                             help_text='null表示不是菜单,这个字段有值才表示二级菜单',
+                                             on_delete=models.DO_NOTHING)
+
+                    def __str__(self):
+                        return self.title
+
+                    class Meta:
+                        db_table = 'permission'
+                        verbose_name = '权限'
+
+
+                class Menu(models.Model):
+                    title = models.CharField(verbose_name='一级菜单', max_length=32)
+                    icon = models.CharField(verbose_name='菜单图标', max_length=32, null=True, blank=True)
+
+                    def __str__(self):
+                        return self.title
+
+                    class Meta:
+                        db_table = 'menu'
+                        verbose_name = '菜单'
+
+            c. 页面显示出二级菜单
+                inclusiontags中循环显示菜单
+
+            *
+            *
+            *
+            经过测试，得到以下数据：
+
+            {
+                1: {
+                    'title': '信息管理',
+                    'icon': 'fa-fire',
+                    'children': [
+                        {'title': '客户列表', 'url': '/customer/list/'}
+                    ]
+                },
+                2: {
+                    'title': '用户管理',
+                    'icon': 'fa-fire',
+                    'children': [
+                        {'title': '账单列表', 'url': '/payment/list/'}
+                    ]
+                }
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
