@@ -54,7 +54,6 @@ def initPermission(userObj, request):
                 'children': [node,]
             }
 
-
     request.session[SYS.PERMISSION_SESSION_KEY] = permissionList
     request.session[SYS.MENU_SESSION_KEY] = menuDict
 

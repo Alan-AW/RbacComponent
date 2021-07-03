@@ -28,6 +28,9 @@ class Permission(models.Model):
     menu = models.ForeignKey(verbose_name='所属菜单', to='Menu',null=True, blank=True,
                              help_text='null表示不是菜单,这个字段有值才表示二级菜单',
                              on_delete=models.DO_NOTHING)
+    pid = models.ForeignKey('self', verbose_name='关联某个权限',
+                            help_text='对于非菜单权限需要选择一个可以成为菜单的权限,用户做默认展开和选中的菜单',
+                            null=True, blank=True, on_delete=models.DO_NOTHING, related_name='parents')
 
     def __str__(self):
         return self.title

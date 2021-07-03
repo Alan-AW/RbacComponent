@@ -80,30 +80,50 @@ CRM系统的开发：
 
             c. 页面显示出二级菜单
                 inclusiontags中循环显示菜单
+                *
+                *
+                *
+                经过测试，得到以下数据：
 
-            *
-            *
-            *
-            经过测试，得到以下数据：
-
-            {
-                1: {
-                    'title': '信息管理',
-                    'icon': 'fa-fire',
-                    'children': [
-                        {'title': '客户列表', 'url': '/customer/list/'}
-                    ]
-                },
-                2: {
-                    'title': '用户管理',
-                    'icon': 'fa-fire',
-                    'children': [
-                        {'title': '账单列表', 'url': '/payment/list/'}
-                    ]
+                {
+                    1: {
+                        'title': '信息管理',
+                        'icon': 'fa-fire',
+                        'children': [
+                            {'title': '客户列表', 'url': '/customer/list/'}
+                        ]
+                    },
+                    2: {
+                        'title': '用户管理',
+                        'icon': 'fa-fire',
+                        'children': [
+                            {'title': '账单列表', 'url': '/payment/list/'}
+                        ]
+                    }
                 }
-            }
 
+    9. 点击一个非菜单的权限让二级菜单能够展开或者隐藏
+        当点击某个不能成为菜单的权限时,指定一个可以成为菜单的权限让其默认选中且展开
+        解决:
+            a. 做一个归属,数据库字段自关联.
+            b. 思路
+                - 登录,做权限和菜单的初始化:
+                    - 获取菜单信息(dict)
+                    - 获取权限信息(list)
+                        改为:
+                        [
+                            {'id':1, 'url':'/xxxxxx/', 'pid':null}
+                            {'id':2, 'url':'/xxxxxx/', 'pid':1}
+                            {'id':2, 'url':'/xxxxxx/', 'pid':1}
+                            .......
+                        ]
+                        优点: 在不影响权限信息获取方式的情况下再次重构数据结构,获取到更多信息
 
+                - 再次访问
+                    - 中间件进行权限校验(获取权限信息)
+                        获取到id或者pid(应该被选中的可以做菜单的权限id)
+
+                - 模板中使用inclusion_tag生成动态菜单(根据菜单信息进行动态生成)
 
 
 
