@@ -14,6 +14,7 @@ def initPermission(userObj, request):
         .values('permission__id',
                 'permission__title',
                 'permission__url',
+                'permission__name',
 
                 'permission__pid_id',
                 'permission__pid__title',
@@ -24,10 +25,10 @@ def initPermission(userObj, request):
                 'permission__menu__icon'
                 ).distinct()  # 获取到所有权限(url)
     # 获取到所有的权限 + 菜单信息 并且写入session
-    permissionList = []
+    permissionDict = {}
     menuDict = {}
     for item in permissionQueryset:
-        permissionList.append({
+        permissionDict[item['permission__name']] = {
             'id': item['permission__id'],
             'title': item['permission__title'],
             'url': item['permission__url'],
@@ -35,7 +36,7 @@ def initPermission(userObj, request):
             'pid': item['permission__pid_id'],
             'p_title': item['permission__pid__title'],
             'p_url': item['permission__pid__url']
-        })
+        }
         menuId = item['permission__menu_id']
         if not menuId:
             continue
@@ -49,7 +50,7 @@ def initPermission(userObj, request):
                 'children': [node, ]
             }
 
-    request.session[SYS.PERMISSION_SESSION_KEY] = permissionList
+    request.session[SYS.PERMISSION_SESSION_KEY] = permissionDict
     request.session[SYS.MENU_SESSION_KEY] = menuDict
 
 

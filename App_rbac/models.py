@@ -24,6 +24,7 @@ class Permission(models.Model):
     '''
     title = models.CharField(verbose_name='标题', max_length=32)
     url = models.CharField(verbose_name='url', max_length=128)
+    name = models.CharField(verbose_name="URL别名", max_length=32, unique=True)
     # 菜单的划分
     menu = models.ForeignKey(verbose_name='所属菜单', to='Menu',null=True, blank=True,
                              help_text='null表示不是菜单,这个字段有值才表示二级菜单',

@@ -24,21 +24,20 @@ class RbacMiddleware(MiddlewareMixin):
             if re.match(valid, current_url):
                 # 直接通过白名单校验，否则才走下面的权限验证
                 return None  # 中间件不拦截，直接去视图函数，有返回值便会被拦截
-        permissionList = request.session.get(SYS.PERMISSION_SESSION_KEY)
-        if not permissionList:
+        permissionDict = request.session.get(SYS.PERMISSION_SESSION_KEY)
+        if not permissionDict:
             return HttpResponse('请先登录！！')
         flag = False
 
-        urlRecord = [
-            {'title': '首页', 'url': '#'}
-        ]
+        urlRecord = [{'title': '首页', 'url': '/login/'}]
 
-        for item in permissionList:
+        for item in permissionDict.values():
             reg = '^%s$' % item['url']
             if re.match(reg, current_url):
                 flag = True
                 # 自动判断，如果pid为true（有值，存在值即为true），则保存了pid，否则保存了id
                 request.currentSelectedPermission = item['pid'] or item['id']
+                # 路径导航的展示
                 if not item['pid']:
                     urlRecord.extend([{'title': item['title'], 'url': item['url'], 'class': 'active'}])
                 else:
@@ -46,7 +45,6 @@ class RbacMiddleware(MiddlewareMixin):
                         {'title': item['p_title'], 'url': item['p_url']},
                         {'title': item['title'], 'url': item['url'], 'class': 'active'},
                     ])
-                print(urlRecord)
                 request.breadcrumb = urlRecord
                 break
         if not flag:

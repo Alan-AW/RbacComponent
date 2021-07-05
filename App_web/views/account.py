@@ -16,3 +16,6 @@ def login(request):
     return redirect('/customer/list/')
 
 
+def logout(request):
+    if request.method == 'GET':
+        return redirect(request, '/login/')

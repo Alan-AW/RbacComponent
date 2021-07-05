@@ -35,9 +35,28 @@ def multiMenu(request):
         'menuDict': orderedDict
     }
 
+
 # 路径导航
 @register.inclusion_tag('rbac/breadcrumb.html')
 def breadcrumb(request):
     return {'recordList': request.breadcrumb}
 
 
+# 权限粒度控制到按钮
+@register.filter
+def hasPermission(request, name):
+    if name in request.session[SYS.PERMISSION_SESSION_KEY]:
+        return True
+
+
+'''
+模版中的使用：
+加上判断语句
+    {% if request|hasPermission:'payment_edit' %}
+        <xxx>{{ xxx }}</xxx>
+    {% endif %}
+    
+    {% if request|hasPermission:'payment_del' or request|hasPermission:'payment_edit' %}
+        <xxx>{{ xxx }}</xxx>
+    {% endif %}
+'''
