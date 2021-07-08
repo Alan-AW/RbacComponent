@@ -76,12 +76,12 @@
         <!-- 一级菜单使用 menuList 二级菜单使用 multiMenu -->
         <!-- 不管使用哪个菜单都需要传参数  request -->
         <div class="menu-body">
-            {% multiMenu request %}
+{#            {% multiMenu request %}#}
         </div>
     </div>
     <div class="right-body">
         <!-- 路径导航，如果不需要路径导航，删掉这个即可 -->
-        {% breadcrumb request %}
+{#        {% breadcrumb request %}#}
         {% block content %} {% endblock %}
     </div>
 </div>

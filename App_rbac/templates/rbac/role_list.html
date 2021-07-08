@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+    <div class="luffy-container">
+        <div class="btn-group" style="margin: 5px 0">
+            <!-- filter装饰器的优点就是他在模版中能当做一个条件，而include tag不能做条件。 -->
+            <!-- filter装饰器最多只允许两个参数，函数名前面写上第一个参数加上 | 后面第二个参数用 : 连接 格式如上-->
+            <!-- **********且不能有空格********* -->
+            <a class="btn btn-default" href="{% url 'rbac:role_add' %}">
+                <i class="fa fa-plus-square" aria-hidden="true"></i> 添加角色
+            </a>
+
+        </div>
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>名称</th>
+                <th>选项</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in roleQuerySet %}
+                <tr>
+                    <td>{{ row.id }}</td>
+                    <td>{{ row.title }}</td>
+                    <td>
+                        <a style="color: #333333;" href="{% url 'rbac:role_edit' pk=row.id %}">
+                            <i class="fa fa-edit" aria-hidden="true"></i></a>
+                        <a style="color: #d9534f;" href="{% url 'rbac:role_del' pk=row.id %}"><i
+                                class="fa fa-trash-o"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
