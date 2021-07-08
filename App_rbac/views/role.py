@@ -20,7 +20,7 @@ class RoleList(View):
 
 class RoleAdd(View):
     """
-    添加用户
+    添加角色
     """
 
     def get(self, request):
