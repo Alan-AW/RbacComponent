@@ -4,6 +4,7 @@ CRM系统的开发：
     - crm业务
 
 步骤：
+
     1. 创建Django project
     2. 分两个APP
     3. App_rbac - 权限系统
@@ -141,7 +142,7 @@ CRM系统的开发：
         12-1. 拆解：
             a. 角色管理
                 知识点：
-                    - django Forms组件
+                    - django Forms组件  ModelForm
                         from django import form
                     - 反向解析django;
                         利用URL别名
@@ -151,6 +152,12 @@ CRM系统的开发：
                         中新建一个rbac目录防止与其他APP模版文件重名导致冲突
 
             b. 用户管理
+                知识点：
+                    Forms 组件 ModelForm
+                        - 字段自定义
+                        - 错误提示（zh-Hans）
+                        - 钩子函数
+                        - 重写init方法，统一给所有字段添加属性(form-control)
 
             c. 菜单和权限管理
 

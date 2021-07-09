@@ -1,0 +1,61 @@
+{% extends 'layout.html' %}
+{% load rbac %}
+
+{% block css %}
+    <style>
+        tr.active {
+            border-left: 3px solid deeppink;
+            background-color: #66afe9;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="luffy-container">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading">
+                    <i class="fa fa-book" aria-hidden="true"></i>一级菜单
+                    <!-- 携带当前页面参数进入添加页面，然后再将当前参数携带回来，用于默认选中菜单的样式生成 -->
+                    <a href="{% memoryUrl request 'rbac:menu_add' %}" class="right btn btn-success btn-xs"
+                       style="padding: 2px 8px;margin: -3px;">
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                        新建
+                    </a>
+
+                </div>
+
+                <!-- Table -->
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>名称</th>
+                        <th>图标</th>
+                        <th>选项</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in menu %}
+                        <tr class="{% if row.id|safe == menuId %}active{% endif %}">
+                            <td><a href="?mid={{ row.id }}">{{ row.title }}</a></td>
+                            <td><i class="fa {{ row.icon }}"></i></td>
+                            <td>
+                                <a href="{% memoryUrl request 'rbac:menu_edit' pk=row.id %}" style="text-decoration: none;font-size: 16px;">
+                                    <i class="fa fa-edit" aria-hidden="true"></i>
+                                </a>
+                                <a href="{% memoryUrl request 'rbac:menu_del' pk=row.id %}" style="text-decoration: none;font-size: 16px;">
+                                    <i class=" fa fa-trash-o"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

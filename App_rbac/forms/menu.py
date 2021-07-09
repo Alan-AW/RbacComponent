@@ -1,0 +1,50 @@
+from django.shortcuts import redirect, render, HttpResponse
+from App_rbac.models import Menu
+from django import forms
+from django.utils.safestring import mark_safe
+
+
+class MenuModelForm(forms.ModelForm):
+    class Meta:
+        model = Menu
+        fields = '__all__'
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'icon': forms.RadioSelect(choices=[
+                ['fa-file-zip-o', mark_safe('<i class="fa fa-file-zip-o" aria-hidden="true"></i>')],
+                ['fa-gear', mark_safe('<i class="fa fa-gear" aria-hidden="true"></i>')],
+                ['fa-snowflake-o', mark_safe('<i class="fa fa-snowflake-o" aria-hidden="true"></i>')],
+                ['fa-vcard', mark_safe('<i class="fa fa-vcard" aria-hidden="true"></i>')],
+                ['fa-vcard', mark_safe('<i class="fa fa-vcard" aria-hidden="true"></i>')],
+                ['fa-window-close', mark_safe('<i class="fa fa-window-close" aria-hidden="true"></i>')],
+                ['fa-wpexplorer', mark_safe('<i class="fa fa-wpexplorer" aria-hidden="true"></i>')],
+                ['fa-bell', mark_safe('<i class="fa fa-bell" aria-hidden="true"></i>')],
+                ['fa-bomb', mark_safe('<i class="fa fa-bomb" aria-hidden="true"></i>')],
+                ['fa-calendar-times-o', mark_safe('<i class="fa fa-calendar-times-o" aria-hidden="true"></i>')],
+                ['fa-camera', mark_safe('<i class="fa fa-camera" aria-hidden="true"></i>')],
+                ['fa-child', mark_safe('<i class="fa fa-child" aria-hidden="true"></i>')],
+                ['fa-cogs', mark_safe('<i class="fa fa-cogs" aria-hidden="true"></i>')],
+                ['fa-comment', mark_safe('<i class="fa fa-comment" aria-hidden="true"></i>')],
+                ['fa-dashboard', mark_safe('<i class="fa fa-dashboard" aria-hidden="true"></i>')],
+                ['fa-envelope', mark_safe('<i class="fa fa-envelope" aria-hidden="true"></i>')],
+                ['fa-film', mark_safe('<i class="fa fa-film" aria-hidden="true"></i>')],
+                ['fa-folder-open', mark_safe('<i class="fa fa-folder-open" aria-hidden="true"></i>')],
+                ['fa-headphones', mark_safe('<i class="fa fa-headphones" aria-hidden="true"></i>')],
+                ['fa-heart', mark_safe('<i class="fa fa-heart" aria-hidden="true"></i>')],
+                ['fa-leaf', mark_safe('<i class="fa fa-leaf" aria-hidden="true"></i>')],
+                ['fa-power-off', mark_safe('<i class="fa fa-power-off" aria-hidden="true"></i>')],
+                ['fa-arrows-alt', mark_safe('<i class="fa fa-arrows-alt" aria-hidden="true"></i>')],
+                ['fa-first-order', mark_safe('<i class="fa fa-first-order" aria-hidden="true"></i>')],
+                ['fa-first-order', mark_safe('<i class="fa fa-first-order" aria-hidden="true"></i>')],
+                ['fa-first-order', mark_safe('<i class="fa fa-first-order" aria-hidden="true"></i>')],
+            ])
+        }
+
+
+"""
+    在菜单页面选择图标
+    1. 引入 from django.utils.safestring import mark_safe 
+        Django默认标签语言是不安全的，会自动转义为字符串在界面中展示 mark_safe 表示不需要转义直接展示
+    2. 使用widgets插件自定义样式
+    3. 使用RadioSelect方法将图标的class属性与图标样式标签放在列表中作为展示和选择。
+"""

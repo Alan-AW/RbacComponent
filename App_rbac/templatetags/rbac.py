@@ -1,7 +1,10 @@
 from django.template import Library
 from django.conf import settings as SYS
+from django.urls import reverse
+from django.http import QueryDict
 import re
 from collections import OrderedDict
+from App_rbac.service import urls
 
 register = Library()  # 注册该组件
 
@@ -31,9 +34,7 @@ def multiMenu(request):
                 val['class'] = ''
         orderedDict[key] = val
 
-    return {
-        'menuDict': orderedDict
-    }
+    return {'menuDict': orderedDict}
 
 
 # 路径导航
@@ -52,6 +53,7 @@ def hasPermission(request, name):
 '''
 模版中的使用：
 加上判断语句
+filter “函数可以作为模版的条件进行判断”
     {% if request|hasPermission:'payment_edit' %}
         <xxx>{{ xxx }}</xxx>
     {% endif %}
@@ -60,3 +62,30 @@ def hasPermission(request, name):
         <xxx>{{ xxx }}</xxx>
     {% endif %}
 '''
+
+
+# 菜单管理url记忆功能
+@register.simple_tag
+def memoryUrl(request, name, *args, **kwargs):
+    """
+    生成带有原搜索条件的url，替代模版中的url(url携带参数)
+    :param request:
+    :param name:
+    :return:
+    """
+    return urls.memoryUrl(request, name, *args, **kwargs)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

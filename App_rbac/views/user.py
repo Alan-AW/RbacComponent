@@ -47,4 +47,13 @@ class UserEdit(View):
 
 
 class UserDel(View):
-    pass
+    def __init__(self):
+        self.cancelUrl = reverse('rbac:user_list')
+
+    def get(self, request, pk):
+        return render(request, 'rbac/delete.html', {'cancelUrl': self.cancelUrl})
+
+    def post(self, request, pk):
+        UserInfo.objects.filter(id=pk).delete()
+        return redirect(self.cancelUrl)
+
