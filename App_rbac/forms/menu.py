@@ -5,6 +5,10 @@ from App_rbac.forms.base import BootStrapModelForm
 
 
 class MenuModelForm(forms.ModelForm):
+    """
+    一级菜单编辑表单
+    """
+
     class Meta:
         model = Menu
         fields = '__all__'
@@ -51,10 +55,17 @@ class MenuModelForm(forms.ModelForm):
 
 
 class SecondMenuModelForm(BootStrapModelForm):
+    """
+    二级菜单编辑表单
+    """
+
     class Meta:
         model = Permission
         # fields = ['title', 'url', 'name', 'menu']
         exclude = ['pid']  # 去掉 pid 字段  结果同上
 
 
-
+class PermissionModelForm(BootStrapModelForm):
+    class Meta:
+        model = Permission
+        fields = ['title', 'name', 'url']
