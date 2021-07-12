@@ -11,16 +11,16 @@
     <meta name="website" content="http://www.xumeijie.com/">
     <link rel="shortcut icon" href="{% static '' %}"/>
     <title id="site_title">用户登录</title>
-    <link rel="stylesheet" type="text/css" href="">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
 </head>
 <body>
 <h1>用户登录</h1>
-<form action="" method="post">
+<form method="post">
     {% csrf_token %}
-    <input type="text" name="user" placeholder="请输入用户名">
-    <input type="password" name="password" placeholder="请输入密码">
-    <input type="submit" value="登录"><span style="color: red">{{ msg }}</span>
+    <p><span style="color: red">{{ msg }}</span></p>
+    <span>用户名：</span><input class="input" type="text" name="user" placeholder="请输入用户名"><br/>
+    <span>密&nbsp;&nbsp;&nbsp;码：</span><input class="input" type="password" name="password" placeholder="请输入密码">
+    <input type="submit" class="submit" value="登录">
 </form>
 </body>
 

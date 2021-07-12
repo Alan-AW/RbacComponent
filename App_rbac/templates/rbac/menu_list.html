@@ -13,6 +13,8 @@
 {% block content %}
 
     <div class="luffy-container">
+
+        <!-- 一级菜单 -->
         <div class="col-md-3">
             <div class="panel panel-default">
                 <!-- Default panel contents -->
@@ -42,10 +44,12 @@
                             <td><a href="?mid={{ row.id }}">{{ row.title }}</a></td>
                             <td><i class="fa {{ row.icon }}"></i></td>
                             <td>
-                                <a href="{% memoryUrl request 'rbac:menu_edit' pk=row.id %}" style="text-decoration: none;font-size: 16px;">
+                                <a href="{% memoryUrl request 'rbac:menu_edit' pk=row.id %}"
+                                   style="text-decoration: none;font-size: 16px;">
                                     <i class="fa fa-edit" aria-hidden="true"></i>
                                 </a>
-                                <a href="{% memoryUrl request 'rbac:menu_del' pk=row.id %}" style="text-decoration: none;font-size: 16px;">
+                                <a href="{% memoryUrl request 'rbac:menu_del' pk=row.id %}"
+                                   style="text-decoration: none;font-size: 16px;">
                                     <i class=" fa fa-trash-o"></i>
                                 </a>
                             </td>
@@ -53,6 +57,58 @@
                     {% endfor %}
 
 
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 二级菜单 -->
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading">
+                    <i class="fa fa-gavel" aria-hidden="true"></i>二级菜单
+                    <!-- 此处作为一个优化项，可写可不写，新建按钮在没有选择一级菜单的情况下不展示判断 -->
+                    {#                    {% if secondMenus %}#}
+                    <a href="{% memoryUrl request 'rbac:second_menu_add' menuId=menuId %}"
+                       class="right btn btn-success btn-xs"
+                       style="padding: 2px 8px;margin: -3px;">
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                        新建
+                    </a>
+                    {#                    {% endif %}#}
+                </div>
+
+                <!-- Table -->
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>名称</th>
+                        <th>CODE&URL</th>
+                        <th>选项</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in secondMenus %}
+                        <tr class="{% if row.id|safe == secondMenuId %}active {% endif %}">
+                            <td rowspan="2"><a href="?mid={{ menuId }}&sid={{ row.id }}">{{ row.title }}</a></td>
+                            <td><a href="#">{{ row.name }}</a></td>
+
+                            <td>
+                                <a href="{% memoryUrl request 'rbac:second_menu_edit' pk=row.id %}"
+                                   style="text-decoration: none;font-size: 16px;">
+                                    <i class="fa fa-edit" aria-hidden="true"></i>
+                                </a>
+                                <a href="{% memoryUrl request 'rbac:second_menu_del' pk=row.id %}"
+                                   style="text-decoration: none;font-size: 16px;">
+                                    <i class=" fa fa-trash-o"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr class="{% if row.id|safe == secondMenuId %}active {% endif %}">
+                            <td colspan="2" style="border-top: 0;"><a href="#">{{ row.url }}</a></td>
+                        </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>

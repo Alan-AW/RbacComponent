@@ -8,18 +8,24 @@ urlpatterns = [
     # 角色管理
     path('role/list/', role.RoleList.as_view(), name='role_list'),
     path('role/add/', role.RoleAdd.as_view(), name='role_add'),
+    re_path(r'role/edit/(?P<pk>\d+)/$', role.RoleEdit.as_view(), name='role_edit'),
+    re_path(r'role/del/(?P<pk>\d+)/$', role.RoleDel.as_view(), name='role_del'),
     # 用户管理
     path('user/list/', user.UserList.as_view(), name='user_list'),
     path('user/add/', user.UserAdd.as_view(), name='user_add'),
-    # 菜单管理
-    path('menu/list/', menu.MenuList.as_view(), name='menu_list'),
-    path('menu/add/', menu.MenuAdd.as_view(), name='menu_add'),
-    re_path(r'role/edit/(?P<pk>\d+)/$', role.RoleEdit.as_view(), name='role_edit'),
-    re_path(r'role/del/(?P<pk>\d+)/$', role.RoleDel.as_view(), name='role_del'),
     re_path(r'user/edit/(?P<pk>\d+)/$', user.UserEdit.as_view(), name='user_edit'),
     re_path(r'user/del/(?P<pk>\d+)/$', user.UserDel.as_view(), name='user_del'),
+    # 一级菜单管理
+    path('menu/list/', menu.MenuList.as_view(), name='menu_list'),
+    path('menu/add/', menu.MenuAdd.as_view(), name='menu_add'),
     re_path(r'menu/edit/(?P<pk>\d+)/$', menu.MenuEdit.as_view(), name='menu_edit'),
     re_path(r'menu/del/(?P<pk>\d+)/$', menu.MenuDel.as_view(), name='menu_del'),
+    # 二级菜单管理
+    re_path(r'second/menu/add/(?P<menuId>\d+)/$', menu.SecondMenuAdd.as_view(), name='second_menu_add'),
+    # re_path(r'second/menu/edit/(?P<pk>\d+)/$', menu.SecondMenuEdit.as_view(), name='second_menu_edit'),
+    # re_path(r'second/menu/del/(?P<pk>\d+)/$', menu.SecondMenuDel.as_view(), name='second_menu_del'),
+    re_path(r'second/menu/edit(?P<pk>\d+)/$', menu.second_menu_edit, name='second_menu_edit'),
+    re_path(r'second/menu/del(?P<pk>\d+)/$', menu.second_menu_del, name='second_menu_del'),
 
 ]
 

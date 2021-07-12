@@ -1,7 +1,7 @@
-from django.shortcuts import redirect, render, HttpResponse
-from App_rbac.models import Menu
+from App_rbac.models import Menu, Permission
 from django import forms
 from django.utils.safestring import mark_safe
+from App_rbac.forms.base import BootStrapModelForm
 
 
 class MenuModelForm(forms.ModelForm):
@@ -48,3 +48,13 @@ class MenuModelForm(forms.ModelForm):
     2. 使用widgets插件自定义样式
     3. 使用RadioSelect方法将图标的class属性与图标样式标签放在列表中作为展示和选择。
 """
+
+
+class SecondMenuModelForm(BootStrapModelForm):
+    class Meta:
+        model = Permission
+        # fields = ['title', 'url', 'name', 'menu']
+        exclude = ['pid']  # 去掉 pid 字段  结果同上
+
+
+
