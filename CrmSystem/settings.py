@@ -52,7 +52,7 @@ MIDDLEWARE = [
 
 ]
 
-ROOT_URLCONF = 'CrmSystem.urls'
+ROOT_URLCONF = 'CrmSystem.urls'  # 项目根路由地址
 
 TEMPLATES = [
     {

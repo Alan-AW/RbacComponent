@@ -110,9 +110,8 @@ def customer_tpl(request):
     :param request:
     :return:
     """
-    tpl_path = os.path.join(settings.BASE_DIR, 'web', 'files', '批量导入客户模板.xlsx')
+    tpl_path = os.path.join(settings.BASE_DIR, 'App_web', 'files', '批量导入客户模板.xlsx')
     content_type = mimetypes.guess_type(tpl_path)[0]
-    print(content_type)
     response = FileResponse(open(tpl_path, mode='rb'), content_type=content_type)
     response['Content-Disposition'] = "attachment;filename=%s" % 'customer_excel_tpl.xlsx'
     return response

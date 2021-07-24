@@ -2,8 +2,13 @@ from django.views import View
 from django.shortcuts import render, redirect, HttpResponse
 from django.urls import reverse
 from App_rbac.models import Menu, Permission
+from App_rbac import models
 from App_rbac.service.urls import memoryReverse
 from App_rbac.forms.menu import MenuModelForm, SecondMenuModelForm, PermissionModelForm
+from collections import OrderedDict
+from django.conf import settings
+from django.utils.module_loading import import_string  # 内置工具，根据字符串进行导入模块
+from django.urls import URLResolver, URLPattern
 
 """
 一级菜单管理
@@ -148,7 +153,7 @@ def second_menu_del(request, pk):
     if request.method == 'GET':
         return render(request, 'rbac/delete.html', {'cancelUrl': url})
 
-    Permission.objects.filter(id=pk).delete()
+    models.Permission.objects.filter(id=pk).delete()
     return redirect(url)
 
 
@@ -158,6 +163,10 @@ def second_menu_del(request, pk):
 
 
 class PermissionAdd(View):
+    """
+    添加权限
+    """
+
     def get(self, request, secondMenuId):
         # menuObj = Menu.objects.filter(id=menuId).first()
         form = PermissionModelForm()
@@ -187,6 +196,12 @@ class PermissionAdd(View):
 
 
 def permission_edit(request, pk):
+    """
+    编辑权限
+    :param request:
+    :param pk: 当前编辑的权限的pk
+    :return:
+    """
     permissionObj = Permission.objects.filter(id=pk).first()
     if request.method == 'GET':
         form = PermissionModelForm(instance=permissionObj)
@@ -198,9 +213,108 @@ def permission_edit(request, pk):
     return render(request, 'rbac/change.html', locals())
 
 
+class PermissionEdit(View):
+    """
+    类方法实现编辑当前权限路由
+    """
+
+    def get(self, request, pk):
+        permissionObj = models.Permission.objects.filter(id=pk).first()
+        form = PermissionModelForm(instance=permissionObj)
+        return render(request, 'rbac/change.html', locals())
+
+    def post(self, request, pk):
+        permissionObj = models.Permission.objects.filter(id=pk).first()
+        form = PermissionModelForm(instance=permissionObj)
+        if form.is_valid():
+            form.save()
+            return redirect(memoryReverse(request, 'rbac:menu_list'))
+
+
 def permission_del(request, pk):
+    """
+    删除权限路由
+    :param request:
+    :param pk: 当前删除的权限pk
+    :return:
+    """
     url = memoryReverse(request, 'rbac:menu_list')
     if request.method == 'GET':
         return render(request, 'rbac/delete.html', {'cancelUrl': url})
     Permission.objects.filter(id=pk).delete()
     return redirect(url)
+
+
+class PermissionDel(View):
+    """
+    类方法删除当前权限信息
+    """
+
+    def get(self, request):
+        url = memoryReverse(request, 'rbac:menu_list')
+        return render(request, 'rbac/delete.html', {'cancelUrl': url})
+
+    def post(self, request, pk):
+        url = memoryReverse(request, 'rbac:menu_list')
+        models.Permission.objects.filter(id=pk).delete()
+        return redirect(url)
+
+
+"""
+    权限的批量操作
+"""
+
+
+def recursion_urls(pre_namespace, pre_url, url_patterns, url_ordered_dict):
+    """
+    :param pre_namespace: namespace的前缀， 以后用于拼接name
+    :param pre_url: url的前缀， 以后用于拼接url
+    :param url_patterns: 用于循环的路由， 路由关系列表
+    :param url_ordered_dict: 用于保存递归中获取的所有路由，有序字典
+    :return:
+    """
+    for item in url_patterns:
+        if isinstance(item, URLPattern):  # 非路由分发
+            if not item.name:
+                continue
+            name = item.name if not pre_namespace else "%s:%s" % (pre_namespace, item.name)
+            url = pre_url + item.pattern.regex.pattern
+            url = url.replace('^', '').replace('$', '')
+            url_ordered_dict[name] = {'name': name, 'url': url}
+        elif isinstance(item, URLResolver):  # 路由分发, 递归
+            if pre_namespace:
+                namespace = "%s:%s" % (pre_namespace, item.namespace) if item.namespace else item.namespace
+            else:
+                namespace = item.namespace if item.namespace else None
+            recursion_urls(namespace, pre_url + item.pattern.regex.pattern, item.url_patterns, url_ordered_dict)
+
+
+def get_all_url_dict():
+    """
+    自动发现项目中的URL(必须有  name  别名)
+    :return: 所有url的有序字典
+    """
+    url_ordered_dict = OrderedDict()  # {'rbac:menu_list': {name:'rbac:menu_list', url: 'xxx/xxx/menu_list'}}
+    md = import_string(settings.ROOT_URLCONF)  # 根据字符串的形式去导入一个模块，在settings中 ROOT_URLCONF 指向的就是项目根路由的文件地址
+    recursion_urls(None, '/', md.urlpatterns, url_ordered_dict)
+    return url_ordered_dict
+
+
+class MultiPermissions(View):
+    """
+    批量操作权限
+    """
+
+    def get(self, request):
+        all_url = get_all_url_dict()
+        for k, v in all_url.items():
+            print(k, v)
+
+        return HttpResponse('ok')
+
+    def post(self, request):
+        pass
+
+
+def multi_permissions(request):
+    return HttpResponse('...')
