@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect, HttpResponse
 from App_rbac.models import *  # 用户表的引入应该在当前App内
-from App_rbac.service.initPermiddion import initPermission  # 用户权限初始化
+from App_rbac.service.initPermission import initPermission  # 用户权限初始化
 
 def login(request):
     # 1.用户登录

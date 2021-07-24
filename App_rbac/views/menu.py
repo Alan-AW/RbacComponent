@@ -1,14 +1,11 @@
-from django.views import View
 from django.shortcuts import render, redirect, HttpResponse
-from django.urls import reverse
-from App_rbac.models import Menu, Permission
+from django.views import View
+
 from App_rbac import models
-from App_rbac.service.urls import memoryReverse
 from App_rbac.forms.menu import MenuModelForm, SecondMenuModelForm, PermissionModelForm
-from collections import OrderedDict
-from django.conf import settings
-from django.utils.module_loading import import_string  # 内置工具，根据字符串进行导入模块
-from django.urls import URLResolver, URLPattern
+from App_rbac.models import Menu, Permission
+from App_rbac.service.urls import memoryReverse
+from App_rbac.service.routes import AutoFindUrl
 
 """
 一级菜单管理
@@ -265,48 +262,14 @@ class PermissionDel(View):
 """
 
 
-def recursion_urls(pre_namespace, pre_url, url_patterns, url_ordered_dict):
-    """
-    :param pre_namespace: namespace的前缀， 以后用于拼接name
-    :param pre_url: url的前缀， 以后用于拼接url
-    :param url_patterns: 用于循环的路由， 路由关系列表
-    :param url_ordered_dict: 用于保存递归中获取的所有路由，有序字典
-    :return:
-    """
-    for item in url_patterns:
-        if isinstance(item, URLPattern):  # 非路由分发
-            if not item.name:
-                continue
-            name = item.name if not pre_namespace else "%s:%s" % (pre_namespace, item.name)
-            url = pre_url + item.pattern.regex.pattern
-            url = url.replace('^', '').replace('$', '')
-            url_ordered_dict[name] = {'name': name, 'url': url}
-        elif isinstance(item, URLResolver):  # 路由分发, 递归
-            if pre_namespace:
-                namespace = "%s:%s" % (pre_namespace, item.namespace) if item.namespace else item.namespace
-            else:
-                namespace = item.namespace if item.namespace else None
-            recursion_urls(namespace, pre_url + item.pattern.regex.pattern, item.url_patterns, url_ordered_dict)
-
-
-def get_all_url_dict():
-    """
-    自动发现项目中的URL(必须有  name  别名)
-    :return: 所有url的有序字典
-    """
-    url_ordered_dict = OrderedDict()  # {'rbac:menu_list': {name:'rbac:menu_list', url: 'xxx/xxx/menu_list'}}
-    md = import_string(settings.ROOT_URLCONF)  # 根据字符串的形式去导入一个模块，在settings中 ROOT_URLCONF 指向的就是项目根路由的文件地址
-    recursion_urls(None, '/', md.urlpatterns, url_ordered_dict)
-    return url_ordered_dict
-
-
 class MultiPermissions(View):
     """
     批量操作权限
     """
 
     def get(self, request):
-        all_url = get_all_url_dict()
+        auto_find_url = AutoFindUrl()
+        all_url = auto_find_url.get_all_url_dict()
         for k, v in all_url.items():
             print(k, v)
 
