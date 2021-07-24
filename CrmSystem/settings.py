@@ -191,5 +191,6 @@ VALID_URL = [  # 白名单设置
 # 自动发现项目中的URL白名单设置
 AUTO_DISCOVER_EXCLUDE = [
     '/admin/.*',
+    '/logout/',
     '/login/',
 ]
