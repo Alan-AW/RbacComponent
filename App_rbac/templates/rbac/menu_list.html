@@ -115,7 +115,7 @@
         </div>
 
         <!-- 权限展示 -->
-        <div class="col-md-4">
+        <div class="col-md-5">
             <div class="panel panel-default">
                 <!-- Default panel contents -->
                 <div class="panel-heading">
@@ -128,7 +128,12 @@
                             新建
                         </a>
                     {% endif %}
-
+                    <a href="{% memoryUrl request 'rbac:multi_permissions' %}"
+                           class="right btn btn-success btn-xs"
+                           style="padding: 2px 8px;margin: -3px;margin-right: 10px">
+                            <i class="fa fa-mail-forward" aria-hidden="true"></i>
+                            批量操作
+                        </a>
                 </div>
 
                 <!-- Table -->

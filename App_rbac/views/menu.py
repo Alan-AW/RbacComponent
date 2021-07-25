@@ -265,64 +265,115 @@ class PermissionDel(View):
 """
 
 
-class MultiPermissions(View):
-    """
-    批量操作权限
-    """
+def multi_permissions(request):
+    post_type = request.GET.get('type')
+    generate_formset_class = formset_factory(MultiAddPermissionForm, extra=0)  # 批量添加的类
+    generate_formset = None
+    update_formset = None
+    update_formset_class = formset_factory(MultiEditPermissionForm, extra=0)  # 批量更新的类
+    if request.method == 'POST' and post_type == 'generate':
+        # 批量添加
+        formset = generate_formset_class(data=request.POST)
+        if formset.is_valid():
+            object_list = []  # 要添加的数据
+            post_row_list = formset.cleaned_data
+            has_error = False
+            for i in range(0, formset.total_form_count()):
+                row_dict = post_row_list[i]
+                try:
+                    new_obj = Permission(**row_dict)
+                    new_obj.validate_unique()
+                    object_list.append(new_obj)  # 检测通过直接append到批量添加的数据中然后批量添加
+                except Exception as e:
+                    has_error = True
+                    formset.errors[i].update(e)
+                    generate_formset = formset
+            if not has_error:
+                Permission.objects.bulk_create(object_list, batch_size=100)  # 没有错误信息的时候直接批量添加操作
+        else:
+            generate_formset = formset
 
-    def get(self, request):
-        # 1.获取项目中的url
-        auto_find_url = AutoFindUrl()
-        all_url = auto_find_url.get_all_url_dict()
-        router_name_set = set(all_url.keys())
+    if request.method == 'POST' and post_type == 'update':
+        # 批量更新
+        formset = update_formset_class(data=request.POST)
+        if formset.is_valid():
+            post_row_list = formset.cleaned_data
+            for i in range(0, formset.total_form_count()):
+                row_dict = post_row_list[i]
+                permission_id = row_dict.pop('id')
+                try:
+                    row_obj = Permission.objects.filter(id=permission_id).first()
+                    for k, v in row_dict.items():
+                        setattr(row_obj, k, v)
+                    row_obj.validate_unique()
+                    row_obj.save()
+                except Exception as e:
+                    formset.errors[i].update(e)
+                    update_formset = formset
+        else:
+            update_formset = formset
 
-        # 2.获取数据库中的url
-        permission = Permission.objects.all().values('id', 'title', 'name', 'url', 'menu_id', 'pid_id')
-        permission_dict = OrderedDict()
-        permission_name_set = set()
-        for row in permission:
-            permission_dict[row['name']] = row
-            # {
-            # 'rbac:role_list': {'id':1, 'title': '角色列表', 'name': 'role_list', 'url': '/rbac/role/list/'........}
-            # 'rbac:role_add': {'id':1, 'title': '角色添加', 'name': 'role_add', 'url': '/rbac/role/add/'........}
-            # }
-            permission_name_set.add(row['name'])  # 添加进字典方法一
-        # permission_name_set = set(permission_dict.keys())  # 添加进字典方法二
 
-        for name, value in permission_dict.items():
-            router_row_dict = all_url.get(name)
-            if not router_row_dict:
-                continue
-            if value['url'] != router_row_dict['url']:
-                value['url'] = '陆游哦与数据库中不一致，请检查'
 
-        # 3.应该添加、删除、或者修改的权限有哪些
-        # 3.1 计算出应该增加的 name
+
+
+    # 1.获取项目中的url
+    auto_find_url = AutoFindUrl()
+    all_url = auto_find_url.get_all_url_dict()
+    router_name_set = set(all_url.keys())
+
+    # 2.获取数据库中的url
+    permission = Permission.objects.all().values('id', 'title', 'name', 'url', 'menu_id', 'pid_id')
+    permission_dict = OrderedDict()
+    permission_name_set = set()
+    for row in permission:
+        permission_dict[row['name']] = row
+        # {
+        # 'rbac:role_list': {'id':1, 'title': '角色列表', 'name': 'role_list', 'url': '/rbac/role/list/'........}
+        # 'rbac:role_add': {'id':1, 'title': '角色添加', 'name': 'role_add', 'url': '/rbac/role/add/'........}
+        # }
+        permission_name_set.add(row['name'])  # 添加进字典方法一
+    # permission_name_set = set(permission_dict.keys())  # 添加进字典方法二
+
+    for name, value in permission_dict.items():
+        router_row_dict = all_url.get(name)
+        if not router_row_dict:
+            continue
+        if value['url'] != router_row_dict['url']:
+            value['url'] = '陆游哦与数据库中不一致，请检查'
+
+    # 3.应该添加、删除、或者修改的权限有哪些
+    # 3.1 计算出应该增加的 name
+    if not generate_formset:
         generate_name_list = router_name_set - permission_name_set
-        generate_formset_class = formset_factory(MultiAddPermissionForm, extra=0)
         generate_formset = generate_formset_class(
             initial=[row_dict for name, row_dict in all_url.items() if name in generate_name_list])
-        # 3.2 计算出应该删除的url
-        delete_name_list = permission_name_set - router_name_set
-        delete_row_list = [row_dict for name, row_dict in permission_dict.items() if name in delete_name_list]
+    # 3.2 计算出应该删除的url
+    delete_name_list = permission_name_set - router_name_set
+    delete_row_list = [row_dict for name, row_dict in permission_dict.items() if name in delete_name_list]
 
-        # 3.3 计算出更新的url
+    # 3.3 计算出更新的url
+    if not update_formset:
         update_name_list = permission_name_set & router_name_set
-        update_formset_class = formset_factory(MultiEditPermissionForm, extra=0)
         update_formset = update_formset_class(
             initial=[row_dict for name, row_dict in all_url.items() if name in update_name_list]
         )  # generate_formset --> 当项目中的一条url与数据库中的url完全相同的时候哦可以用update_name_list中的数据，
-        # 但是如果同一条url在数据库中的数据与项目中的数据不一致的情况下应该让用户主动去选择而不是默认以数据库中的为准
-        # 所以在这些操作之前进行了一个判断 router_row_dict 第292行
-        return render(request, 'rbac/multi_permission.html', {
-            'generate_formset': generate_formset,
-            'delete_row_list': delete_row_list,
-            'update_formset': update_formset
-        })
-
-    def post(self, request):
-        pass
+    # 但是如果同一条url在数据库中的数据与项目中的数据不一致的情况下应该让用户主动去选择而不是默认以数据库中的为准
+    # 所以在这些操作之前进行了一个判断 router_row_dict 第292行
+    return render(request, 'rbac/multi_permission.html', {
+        'generate_formset': generate_formset,
+        'delete_row_list': delete_row_list,
+        'update_formset': update_formset
+    })
 
 
-def multi_permissions(request):
-    return HttpResponse('...')
+def multi_permissions_del(request, pk):
+    url = memoryReverse(request, 'rbac:multi_permissions')
+    if request.method == 'GET':
+        return render(request, 'rbac/delete.html', {'cancelUrl': url})
+    Permission.objects.filter(id=pk).delete()
+    return redirect(url)
+
+
+
+

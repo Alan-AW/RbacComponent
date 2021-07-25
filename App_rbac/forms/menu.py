@@ -83,19 +83,17 @@ class MultiAddPermissionForm(forms.Form):
     )
     menu_id = forms.ChoiceField(
         choices=[(None, '------------')],
-        widget=forms.TextInput(attrs={'class': 'form-control'}),
         required=False
     )
     pid_id = forms.ChoiceField(
         choices=[(None, '------------')],
-        widget=forms.TextInput(attrs={'class': 'form-control'}),
         required=False
     )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['menu_id'].choices += models.Menu.objects.values_list('id', 'title')
-        self.fields['pid_id'].choices += models.Permission.objects.filter(pid__isnull=False).exclude(
+        self.fields['pid_id'].choices += models.Permission.objects.filter(pid__isnull=True).exclude(
             menu__isnull=True
         ).values_list('id', 'title')
 
@@ -115,19 +113,17 @@ class MultiEditPermissionForm(forms.Form):
     )
     menu_id = forms.ChoiceField(
         choices=[(None, '------------')],
-        widget=forms.TextInput(attrs={'class': 'form-control'}),
         required=False
     )
     pid_id = forms.ChoiceField(
         choices=[(None, '------------')],
-        widget=forms.TextInput(attrs={'class': 'form-control'}),
         required=False
     )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['menu_id'].choices += models.Menu.objects.values_list('id', 'title')
-        self.fields['pid_id'].choices += models.Permission.objects.filter(pid__isnull=False).exclude(
+        self.fields['pid_id'].choices += models.Permission.objects.filter(pid__isnull=True).exclude(
             menu__isnull=True
         ).values_list('id', 'title')
 

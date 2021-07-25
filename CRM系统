@@ -171,7 +171,7 @@ CRM系统的开发：
                     * form表单样式定制基类 BootStrapModelForm
 
             d. 权限的批量操作
-                1. formset
+                1. formset(ModelFormSet)
                     formset： form组件 或 modelForm组件 是用于做“一个”表单验证的，
                     formset组件是用于做“多个”表单的验证的。
                     应用场景：适用于批量操作
@@ -190,6 +190,7 @@ CRM系统的开发：
                         set1 & set2 ==> 更新 + formset
 
             e. 权限分配
+
             
 
 
