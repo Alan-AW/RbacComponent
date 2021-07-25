@@ -16,6 +16,8 @@ class UserInfo(models.Model):
     class Meta:
         db_table = 'userinfo'
         verbose_name = '用户'
+        abstract = True  # Django以后再做数据迁移时，不再为UserInfo创建相关的表以及表结构
+        # 此类可以当作父类，被其他Models类继承
 
 
 class Permission(models.Model):

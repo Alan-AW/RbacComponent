@@ -190,8 +190,25 @@ CRM系统的开发：
                         set1 & set2 ==> 更新 + formset
 
             e. 权限分配
+                1. 展示用户角色权限信息
 
-            
+                2. 选择用户和角色时页面上的默认选项选中
+
+                3. 角色、权限的分配 - 保存
+                    {% if secondMenuId %}
+                        <a href="{% memoryUrl request 'rbac:permission_add' secondMenuId=secondMenuId %}"
+                           class="right btn btn-success btn-xs"
+                           style="padding: 2px 8px;margin: -3px;">
+                            <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                            新建
+                        </a>
+                    {% endif %}
+                    <a href="{% memoryUrl request 'rbac:multi_permissions' %}"
+                           class="right btn btn-success btn-xs"
+                           style="padding: 2px 8px;margin: -3px;margin-right: 10px">
+                            <i class="fa fa-mail-forward" aria-hidden="true"></i>
+                            批量操作
+                        </a>
 
 
 

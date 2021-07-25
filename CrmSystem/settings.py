@@ -49,7 +49,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # 'App_rbac.middleware.rbac.RbacMiddleware',
-
 ]
 
 ROOT_URLCONF = 'CrmSystem.urls'  # 项目根路由地址
@@ -178,14 +177,22 @@ FILE_UPLOAD_PERMISSIONS = None
 FILE_UPLOAD_DIRECTORY_PERMISSIONS = None
 
 # ############################### 权限相关的配置 ##############################################
+RBAC_USER_MODEL_CLASS = 'App_web.models.UserInfo'  # 业务中的用户表
 
 PERMISSION_SESSION_KEY = 'permissionListKey'  # 用户权限URL session存储
 
 MENU_SESSION_KEY = 'menuListKey'  # 权限菜单session存储
 
-VALID_URL = [  # 白名单设置
+VALID_URL = [  # 权限校验白名单设置
     '/login/',
     '/admin/.*',
+    'logout',
+]
+
+# 需要登陆但无需权限校验的URL
+NO_PERMISSION_LIST = [
+    '/index/',
+    'logout',
 ]
 
 # 自动发现项目中的URL白名单设置

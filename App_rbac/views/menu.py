@@ -6,7 +6,7 @@ from collections import OrderedDict
 from App_rbac import models
 from App_rbac.forms.menu import MenuModelForm, SecondMenuModelForm, PermissionModelForm, MultiAddPermissionForm, \
     MultiEditPermissionForm
-from App_rbac.models import Menu, Permission
+from App_rbac.models import *
 from App_rbac.service.urls import memoryReverse
 from App_rbac.service.routes import AutoFindUrl
 
@@ -313,10 +313,6 @@ def multi_permissions(request):
         else:
             update_formset = formset
 
-
-
-
-
     # 1.获取项目中的url
     auto_find_url = AutoFindUrl()
     all_url = auto_find_url.get_all_url_dict()
@@ -375,5 +371,56 @@ def multi_permissions_del(request, pk):
     return redirect(url)
 
 
+"""
+权限分配
+"""
 
 
+def distribute_permissions(request):
+    # 获取所有的用户
+    all_user_list = UserInfo.objects.all()
+    # 获取所有的角色
+    all_role_list = Role.objects.all()
+    # 构造权限的数据结构
+    menu_permissions_list = []
+    # 1. 获取所有的一级菜单
+    all_menu_list = Menu.objects.values('id', 'title')
+    all_menu_dict = {}
+    for item in all_menu_list:
+        item['children'] = []
+        all_menu_dict[item['id']] = item
+
+    # 2. 获取所有的二级菜单  菜单不为空，则表示为二级菜单
+    all_second_menu_list = Permission.objects.filter(menu__isnull=False).values('id', 'title', 'menu_id')
+    all_second_menu_dict = {}
+    for row in all_second_menu_list:
+        row['children'] = []
+        all_second_menu_dict[row['id']] = row
+        menu_id = row['menu_id']
+        all_menu_dict[menu_id]['children'].append(row)
+    # 3. 获取所有的三级菜单（不能做菜单的权限
+    all_permission_list = Permission.objects.filter(menu__isnull=True).values('id', 'title', 'pid_id')  # 归属到二级菜单
+    for row in all_permission_list:
+        pid = row['pid_id']
+        if not pid:  # 数据不合法，不做处理
+            continue
+        all_second_menu_dict[pid]['children'].append(row)
+
+
+    """
+    [
+        {
+        id:1,
+         'title': '业务管理',
+         children: [{
+            id: 1,
+            'title': '权限信息',
+            children: [{
+                xxxxxxxx
+            }]
+         }]
+        },
+    ]
+    """
+
+    return render(request, 'rbac/distribute_permissions.html', locals())
