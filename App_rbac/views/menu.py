@@ -377,6 +377,30 @@ def multi_permissions_del(request, pk):
 
 
 def distribute_permissions(request):
+    """
+    权限的分配
+    :param request:
+    :return:
+    """
+    # 获取到当前选择的用户id
+    user_id = request.GET.get('uid')
+    userobj = UserInfo.objects.filter(id=user_id).first()
+    if not userobj:
+        user_id = None
+    # 根据当前用户查询到拥有的所有角色的id，前端进行判断默认选中当前用户的所有角色
+    if user_id:  # 验证用户是否存在
+        user_has_roles = userobj.roles.all()
+    else:
+        user_has_roles = []
+    user_has_roles_dict = {item.id: None for item in user_has_roles}  # 字典生成
+    # 当前用户拥有的所有权限
+    if user_id:
+        user_has_permissions = userobj.roles.filter(permission__id__isnull=False)\
+            .values('id', 'permission').distinct()
+    else:
+        user_has_permissions = []
+    user_has_permissions_dict = {item['permission']: None for item in user_has_permissions}
+
     # 获取所有的用户
     all_user_list = UserInfo.objects.all()
     # 获取所有的角色
@@ -389,7 +413,6 @@ def distribute_permissions(request):
     for item in all_menu_list:
         item['children'] = []
         all_menu_dict[item['id']] = item
-
     # 2. 获取所有的二级菜单  菜单不为空，则表示为二级菜单
     all_second_menu_list = Permission.objects.filter(menu__isnull=False).values('id', 'title', 'menu_id')
     all_second_menu_dict = {}
@@ -405,7 +428,6 @@ def distribute_permissions(request):
         if not pid:  # 数据不合法，不做处理
             continue
         all_second_menu_dict[pid]['children'].append(row)
-
 
     """
     [

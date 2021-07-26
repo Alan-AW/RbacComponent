@@ -2,9 +2,9 @@ from django.db import models
 
 
 class UserInfo(models.Model):
-    '''
+    """
     用户表
-    '''
+    """
     name = models.CharField(verbose_name='用户名', max_length=32)
     password = models.CharField(verbose_name='密码', max_length=64)
     email = models.CharField(verbose_name='邮箱', max_length=64)
@@ -16,14 +16,14 @@ class UserInfo(models.Model):
     class Meta:
         db_table = 'userinfo'
         verbose_name = '用户'
-        abstract = True  # Django以后再做数据迁移时，不再为UserInfo创建相关的表以及表结构
+        # abstract = True  # Django以后再做数据迁移时，不再为UserInfo创建相关的表以及表结构
         # 此类可以当作父类，被其他Models类继承
 
 
 class Permission(models.Model):
-    '''
+    """
     权限表
-    '''
+    """
     title = models.CharField(verbose_name='标题', max_length=32)
     url = models.CharField(verbose_name='url', max_length=128)
     name = models.CharField(verbose_name="URL别名", max_length=32, unique=True)
@@ -56,9 +56,9 @@ class Menu(models.Model):
 
 
 class Role(models.Model):
-    '''
+    """
     角色表
-    '''
+    """
     title = models.CharField(verbose_name='角色名称', max_length=32)
     permission = models.ManyToManyField(verbose_name='拥有的权限', to='Permission', blank=True)
 

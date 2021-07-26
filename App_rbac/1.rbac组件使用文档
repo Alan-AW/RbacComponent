@@ -102,7 +102,8 @@ RBAC组件使用文档
 
     3. 权限信息的录入
     4. 配置文件
-        4.1注册rbac这个app
+        4.0 注册rbac这个app
+        4.1 将rbac/models中的blank = True解除注释 使得它可以被继承
         4.2中间件
         MIDDLEWARE = [
             ....
