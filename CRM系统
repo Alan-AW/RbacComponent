@@ -193,22 +193,30 @@ CRM系统的开发：
                 1. 展示用户角色权限信息
 
                 2. 选择用户和角色时页面上的默认选项选中
+                    * test.py 中的 数据构造方法 *
+                    menu_list = [
+                        {'id': 1, 'title': '菜单1'},
+                        {'id': 2, 'title': '菜单2'},
+                        {'id': 3, 'title': '菜单3'},
+                    ]
+
+                    menu_dict = {}
+
+                    """
+                    将menu_list变成menu_dict:
+                    {
+                        1: "{'id': 1, 'title': '菜单1'}",
+                        2: "{'id': 2, 'title': '菜单2'}",
+                        3: "{'id': 3, 'title': '菜单3'}",
+                    }
+                    """
+
+                    for item in menu_list:
+                        menu_dict[item['id']] = item
+                    print(menu_dict)
 
                 3. 角色、权限的分配 - 保存
-                    {% if secondMenuId %}
-                        <a href="{% memoryUrl request 'rbac:permission_add' secondMenuId=secondMenuId %}"
-                           class="right btn btn-success btn-xs"
-                           style="padding: 2px 8px;margin: -3px;">
-                            <i class="fa fa-plus-circle" aria-hidden="true"></i>
-                            新建
-                        </a>
-                    {% endif %}
-                    <a href="{% memoryUrl request 'rbac:multi_permissions' %}"
-                           class="right btn btn-success btn-xs"
-                           style="padding: 2px 8px;margin: -3px;margin-right: 10px">
-                            <i class="fa fa-mail-forward" aria-hidden="true"></i>
-                            批量操作
-                        </a>
+
 
 
 

@@ -379,27 +379,52 @@ def multi_permissions_del(request, pk):
 def distribute_permissions(request):
     """
     权限的分配
-    :param request:
-    :return:
     """
     # 获取到当前选择的用户id
     user_id = request.GET.get('uid')
-    userobj = UserInfo.objects.filter(id=user_id).first()
-    if not userobj:
+    user_obj = UserInfo.objects.filter(id=user_id).first()
+    if not user_obj:
         user_id = None
+    # 获取当前选择的角色id
+    r_id = request.GET.get('r_id')
+    role_obj = Role.objects.filter(id=r_id).first()
+    if not role_obj:
+        r_id = None
+
+    # POST提交的数据进行保存
+    if request.method == 'POST':
+        style_type = request.POST.get('type')
+        if style_type == 'role':
+            roles_id_list = request.POST.getlist('roles')
+            # 把用户和角色的关系添加到关系表中manytomany的关系操作
+            if not user_obj:
+                return HttpResponse('请不要违规操作！必须先选择用户再做角色的分配')
+            user_obj.roles.set(roles_id_list)
+        elif style_type == 'permission':
+            permission_id_list = request.POST.getlist('permissions')
+            # 把权限和角色的关系添加到关系表中manytomany的关系操作
+            if not role_obj:
+                return HttpResponse('请不要违规操作！必须先选择角色再做权限的分配')
+            role_obj.permission.set(permission_id_list)
+
     # 根据当前用户查询到拥有的所有角色的id，前端进行判断默认选中当前用户的所有角色
     if user_id:  # 验证用户是否存在
-        user_has_roles = userobj.roles.all()
+        user_has_roles = user_obj.roles.all()
     else:
         user_has_roles = []
     user_has_roles_dict = {item.id: None for item in user_has_roles}  # 字典生成
-    # 当前用户拥有的所有权限
-    if user_id:
-        user_has_permissions = userobj.roles.filter(permission__id__isnull=False)\
+    # 权限默认选中的展示
+    # 如果选择了角色，那么有限显示该角色所拥有的权限
+    if role_obj:  # 选择了角色
+        user_has_permissions = role_obj.permission.all()
+        user_has_permissions_dict = {item.id: None for item in user_has_permissions}
+    elif user_obj:  # 未选中角色但是选中了用户
+        user_has_permissions = user_obj.roles.filter(permission__id__isnull=False) \
             .values('id', 'permission').distinct()
+        user_has_permissions_dict = {item['permission']: None for item in user_has_permissions}
     else:
-        user_has_permissions = []
-    user_has_permissions_dict = {item['permission']: None for item in user_has_permissions}
+        user_has_permissions_dict = {}
+        # 如果没有选择角色，那么就显示该用户的所有的权限
 
     # 获取所有的用户
     all_user_list = UserInfo.objects.all()
@@ -444,5 +469,7 @@ def distribute_permissions(request):
         },
     ]
     """
+
+
 
     return render(request, 'rbac/distribute_permissions.html', locals())
