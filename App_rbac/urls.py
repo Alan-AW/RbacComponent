@@ -15,7 +15,7 @@ urlpatterns = [
     path('user/add/', user.UserAdd.as_view(), name='user_add'),
     re_path(r'user/edit/(?P<pk>\d+)/$', user.UserEdit.as_view(), name='user_edit'),
     re_path(r'user/del/(?P<pk>\d+)/$', user.UserDel.as_view(), name='user_del'),
-    # 一级菜单管理又没了
+    # 一级菜单管理
     path('menu/list/', menu.MenuList.as_view(), name='menu_list'),
     path('menu/add/', menu.MenuAdd.as_view(), name='menu_add'),
     re_path(r'menu/edit/(?P<pk>\d+)/$', menu.MenuEdit.as_view(), name='menu_edit'),

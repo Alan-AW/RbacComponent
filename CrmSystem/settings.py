@@ -48,7 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'App_rbac.middleware.rbac.RbacMiddleware',
+    'App_rbac.middleware.rbac.RbacMiddleware',
 ]
 
 ROOT_URLCONF = 'CrmSystem.urls'  # 项目根路由地址
@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'CrmSystem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'crmSys',
+        'NAME': 'CrmSystem',
         'USER': 'root',
         'PASSWORD': 'xcdh560',
         'HOST': '127.0.0.1',

@@ -39,37 +39,30 @@
         </div>
 
         <div class="right-menu right clearfix">
-
             <div class="user-info right">
                 <a href="#" class="avatar">
                     <img class="img-circle" src="{% static 'imgs/default.png' %}">
                 </a>
-
                 <div class="more-info">
-                    <a href="#" class="more-item">{{ request.user }}</a>
-                    <a href="{% url 'App_web:login' %}" class="more-item">注销</a>
+                    <a href="{% url 'App_web:login' %}" class="more-item">重新登陆</a>
                 </div>
             </div>
-
             <a class="user-menu right">
                 消息
                 <i class="fa fa-commenting-o" aria-hidden="true"></i>
                 <span class="badge bg-success">2</span>
             </a>
-
             <a class="user-menu right">
                 通知
                 <i class="fa fa-envelope-o" aria-hidden="true"></i>
                 <span class="badge bg-success">2</span>
             </a>
-
             <a class="user-menu right">
                 任务
                 <i class="fa fa-bell-o" aria-hidden="true"></i>
                 <span class="badge bg-danger">4</span>
             </a>
         </div>
-
     </div>
 </div>
 <div class="pg-body">
@@ -77,12 +70,12 @@
         <!-- 一级菜单使用 menuList 二级菜单使用 multiMenu -->
         <!-- 不管使用哪个菜单都需要传参数  request -->
         <div class="menu-body">
-{#            {% multiMenu request %}#}
+            {% multiMenu request %}
         </div>
     </div>
     <div class="right-body">
         <!-- 路径导航，如果不需要路径导航，删掉这个即可 -->
-{#        {% breadcrumb request %}#}
+        {% breadcrumb request %}
         {% block content %} {% endblock %}
     </div>
 </div>

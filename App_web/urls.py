@@ -5,7 +5,8 @@ from App_web.views import account
 
 app_name = 'App_web'
 urlpatterns = [
-    # 用户
+
+    # 客户
     url(r'^customer/list/$', customer.customer_list, name='customer_list'),
     url(r'^customer/add/$', customer.customer_add, name='customer_add'),
     url(r'^customer/edit/(?P<cid>\d+)/$', customer.customer_edit, name='customer_edit'),
@@ -19,7 +20,7 @@ urlpatterns = [
     url(r'^payment/edit/(?P<pid>\d+)/$', payment.payment_edit, name='payment_edit'),
     url(r'^payment/del/(?P<pid>\d+)/$', payment.payment_del, name='payment_del'),
     # 用户登陆&退出
-    url(r'^login/$', account.login, name='login'),
-    url(r'^/logout/$', account.logout, name='logout')
+    url(r'^login/$', account.Login.as_view(), name='login'),
+    url(r'^logout/$', account.logout, name='logout')
 
 ]
