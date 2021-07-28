@@ -27,7 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -201,3 +200,4 @@ AUTO_DISCOVER_EXCLUDE = [
     '/logout/',
     '/login/',
 ]
+

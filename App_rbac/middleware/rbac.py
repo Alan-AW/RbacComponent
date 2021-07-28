@@ -5,17 +5,17 @@ import re
 
 
 class RbacMiddleware(MiddlewareMixin):
-    '''
+    """
     用户权限信息的校验
-    '''
+    """
 
     def process_request(self, request):
-        '''
+        """
         当用户请求刚进入时做这个校验
         1.获取当前用户请求的url
         2.去session中获取保存的当前用户的所有权限url列表，
         3.权限信息的匹配：只要有一个能匹配成功即可
-        '''
+        """
         # request.path_info  会获取到当前用户访问的url  与携带的参数无关
 
         # ******进行白名单设置
@@ -27,9 +27,15 @@ class RbacMiddleware(MiddlewareMixin):
         permissionDict = request.session.get(SYS.PERMISSION_SESSION_KEY)
         if not permissionDict:
             return HttpResponse('请先登录！！')
-        flag = False
-
         urlRecord = [{'title': '首页', 'url': '/login/'}]
+        # 此处代码对需要登陆但是无需权限校验的url进行直接访问
+        for url in SYS.NO_PERMISSION_LIST:
+            if re.match(url, request.path_info):
+                request.currentSelectedPermission = 0
+                request.breadcrumb = urlRecord
+                return None
+
+        flag = False
 
         for item in permissionDict.values():
             reg = '^%s$' % item['url']
@@ -49,6 +55,7 @@ class RbacMiddleware(MiddlewareMixin):
                 break
         if not flag:
             return HttpResponse('无权访问!!')
+
 
 '''
  方案一：

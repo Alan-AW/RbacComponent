@@ -5,14 +5,25 @@ RBAC组件使用文档
 2. 将migrations中的数据迁移记录删除
 
 3. 业务系统中用户表结构的设计
-    业务表结构中的用户表需要跟RBAC中的用户表有继承关系即：
+    3.1 业务表结构中的用户表需要跟RBAC中的用户表有继承关系（rbac继承models.py）
+    继承关系：
+        class UserInfo(models.Model):
+            .
+            .
+            class Meta:
+                abstract = True
+        修改这样之后原来rbac组件中的对用户的增删改查不可用
+        因为Django将不会生成这个表和其对应关系，这个表被整合到
+        业务系统中的用户表去了
+    或者创建一个OneToOne关系关联即：
         业务中的用户表
+        from rbac.models import RbacUserInfo
         class UserInfo(RbacUserInfo):
             xxxxxx
             .
             .
-            .
-            .
+            ...
+    3.2 **如果业务逻辑中的用户关系较为复杂，可以放弃rbac对用户的管理
 
 4. 将业务系统中的用户表的路径写到配置文件:
     RBAC_USER_MODEL_CLASS = 'App_name.models.UserInfo'  # 业务中的用户表
@@ -47,7 +58,6 @@ RBAC组件使用文档
 7. 设计用户登陆的逻辑｛一定要设计权限初始化｝
     # 权限初始化
     init_permission(user_obj, request)
-
     相关的配置：settings.py中
             PERMISSION_SESSION_KEY = 'permissionListKey'  # 用户权限URL session存储
             MENU_SESSION_KEY = 'menuListKey'  # 权限菜单session存储
@@ -136,7 +146,8 @@ RBAC组件使用文档
             '/login/',
         ]
 
-        4.4 粒度到按钮级别的控制
+        4.4 HTML粒度到按钮级别的控制
+
 
 
 
