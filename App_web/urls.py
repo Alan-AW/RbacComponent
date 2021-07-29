@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^payment/del/(?P<pid>\d+)/$', payment.payment_del, name='payment_del'),
     # 用户登陆&退出
     url(r'^login/$', account.Login.as_view(), name='login'),
-    url(r'^logout/$', account.logout, name='logout')
+    url(r'^logout/$', account.logout, name='logout'),
+    url(r'^index/$', account.index, name='index'),
 
 ]

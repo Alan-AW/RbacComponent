@@ -1,6 +1,7 @@
 from django.utils.deprecation import MiddlewareMixin
 from django.shortcuts import render, redirect, HttpResponse
 from django.conf import settings as SYS
+from App_web.models import UserInfo as webUser
 import re
 
 
@@ -27,7 +28,7 @@ class RbacMiddleware(MiddlewareMixin):
         permissionDict = request.session.get(SYS.PERMISSION_SESSION_KEY)
         if not permissionDict:
             return HttpResponse('请先登录！！')
-        urlRecord = [{'title': '首页', 'url': '/login/'}]
+        urlRecord = [{'title': '首页', 'url': '/index/'}]
         # 此处代码对需要登陆但是无需权限校验的url进行直接访问
         for url in SYS.NO_PERMISSION_LIST:
             if re.match(url, request.path_info):

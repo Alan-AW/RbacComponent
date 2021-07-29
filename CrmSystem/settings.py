@@ -185,13 +185,13 @@ MENU_SESSION_KEY = 'menuListKey'  # 权限菜单session存储
 VALID_URL = [  # 权限校验白名单设置
     '/login/',
     '/admin/.*',
-    'logout',
+    '/logout/',
 ]
 
 # 需要登陆但无需权限校验的URL
 NO_PERMISSION_LIST = [
     '/index/',
-    'logout',
+    '/logout/',
 ]
 
 # 自动发现项目中的URL白名单设置
@@ -199,5 +199,6 @@ AUTO_DISCOVER_EXCLUDE = [
     '/admin/.*',
     '/logout/',
     '/login/',
+    '/index/',
 ]
 

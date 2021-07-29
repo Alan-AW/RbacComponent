@@ -1,4 +1,14 @@
 from django.db import models
+from App_rbac.models import UserInfo as RbacUserInfo
+
+
+class UserInfo(RbacUserInfo):
+    """
+    用户表
+    """
+    phone = models.CharField(verbose_name='电话', max_length=32)
+    home = models.CharField(verbose_name='地址', max_length=64)
+    loves = models.CharField(verbose_name='爱好', max_length=128)
 
 
 class Customer(models.Model):

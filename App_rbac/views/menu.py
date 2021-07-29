@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.shortcuts import render, redirect, HttpResponse
+from django.utils.module_loading import import_string
 from django.views import View
 from django.forms import formset_factory
 from collections import OrderedDict
@@ -382,7 +384,8 @@ def distribute_permissions(request):
     """
     # 获取到当前选择的用户id
     user_id = request.GET.get('uid')
-    user_obj = UserInfo.objects.filter(id=user_id).first()
+    user_model_class = import_string(settings.RBAC_USER_MODEL_CLASS)
+    user_obj = user_model_class.objects.filter(id=user_id).first()
     if not user_obj:
         user_id = None
     # 获取当前选择的角色id
@@ -427,7 +430,7 @@ def distribute_permissions(request):
         # 如果没有选择角色，那么就显示该用户的所有的权限
 
     # 获取所有的用户
-    all_user_list = UserInfo.objects.all()
+    all_user_list = user_model_class.objects.all()
     # 获取所有的角色
     all_role_list = Role.objects.all()
     # 构造权限的数据结构

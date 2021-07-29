@@ -1,7 +1,7 @@
 from django.views import View
 from django.urls import reverse
 from django.shortcuts import render, redirect, HttpResponse
-from App_rbac.models import UserInfo
+from App_web.models import UserInfo  # 使用业务中的用户表进行操作
 from App_rbac.forms.user import UserModelForm, UpdateUserModelForm
 
 """
@@ -56,4 +56,3 @@ class UserDel(View):
     def post(self, request, pk):
         UserInfo.objects.filter(id=pk).delete()
         return redirect(self.cancelUrl)
-
